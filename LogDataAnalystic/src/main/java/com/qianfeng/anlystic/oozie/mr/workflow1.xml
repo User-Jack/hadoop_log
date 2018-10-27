@@ -1,0 +1,139 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="lda-mr">
+    <start to="etl"/>
+    <action name="etl">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.etl.tohbase.ParseLogRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-au"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-au">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.au.ActiveUserRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-nm"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-nm">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.nm.NewMemberRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-am"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-am">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.am.ActiveMemberRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-pv"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-pv">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.pv.PageViewRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-session"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-session">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.session.SessionRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="mr-location"/>
+        <error to="fail"/>
+    </action>
+
+    <action name="mr-location">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.local.LocationRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="end"/>
+        <error to="fail"/>
+    </action>
+
+
+    <kill name="fail">
+        <message>Java failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>

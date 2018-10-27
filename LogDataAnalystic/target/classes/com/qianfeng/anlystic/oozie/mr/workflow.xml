@@ -1,0 +1,153 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="lda-mr">
+    <start to="etl"/>
+    <action name="etl">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.etl.tohbase.ParseLogRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="fk1"/>
+        <error to="fail"/>
+    </action>
+
+    <fork name="fk1">
+        <path start="mr-au" />
+        <path start="mr-nm" />
+        <path start="mr-am" />
+    </fork>
+
+
+    <action name="mr-au">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.au.ActiveUserRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn1"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-nm">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.nm.NewMemberRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn1"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-am">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.am.ActiveMemberRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn1"/>
+        <error to="fail"/>
+    </action>
+
+    <join name="jn1" to="fk2"></join>
+    <fork name="fk2">
+        <path start="mr-pv" />
+        <path start="mr-session" />
+        <path start="mr-location" />
+    </fork>
+
+
+    <action name="mr-pv">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.pv.PageViewRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn2"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="mr-session">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.session.SessionRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn2"/>
+        <error to="fail"/>
+    </action>
+
+    <action name="mr-location">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.anlystic.mr.local.LocationRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="jn2"/>
+        <error to="fail"/>
+    </action>
+
+    <join name="jn2" to="end"></join>
+
+    <kill name="fail">
+        <message>Java failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>

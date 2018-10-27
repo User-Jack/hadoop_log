@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--将kpi指标和对应的sql赋值的类进行存储-->
+<configuration>
+
+    <property>
+        <name>writter_new_install_user</name>
+        <value>com.qianfeng.anlystic.mr.nu.NewUserWritter</value>
+    </property>
+
+    <property>
+        <name>writter_browser_new_install_user</name>
+        <value>com.qianfeng.anlystic.mr.nu.BrowserNewUserWritter</value>
+    </property>
+
+    <property>
+        <name>writter_active_user</name>
+        <value>com.qianfeng.anlystic.mr.au.ActiveUserWritter</value>
+    </property>
+
+    <property>
+        <name>writter_browser_active_user</name>
+        <value>com.qianfeng.anlystic.mr.au.BrowserActiveUserWritter</value>
+    </property>
+
+    <property>
+        <name>writter_active_member</name>
+        <value>com.qianfeng.anlystic.mr.am.ActiveMemberWritter</value>
+    </property>
+
+    <property>
+        <name>writter_browser_active_member</name>
+        <value>com.qianfeng.anlystic.mr.am.BrowserActiveMemberWritter</value>
+    </property>
+
+    <property>
+        <name>writter_new_member</name>
+        <value>com.qianfeng.anlystic.mr.nm.NewMemberWritter</value>
+    </property>
+
+    <property>
+        <name>writter_browser_new_member</name>
+        <value>com.qianfeng.anlystic.mr.nm.NewMemberWritter</value>
+    </property>
+
+    <property>
+        <name>writter_member_info</name>
+        <value>com.qianfeng.anlystic.mr.nm.NewMemberWritter</value>
+    </property>
+
+
+    <property>
+        <name>writter_session</name>
+        <value>com.qianfeng.anlystic.mr.session.SessionWritter</value>
+    </property>
+
+    <property>
+        <name>writter_browser_session</name>
+        <value>com.qianfeng.anlystic.mr.session.SessionWritter</value>
+    </property>
+
+    <property>
+        <name>writter_hourly_active_user</name>
+        <value>com.qianfeng.anlystic.mr.au.HourlyActiveUserWritter</value>
+    </property>
+
+    <property>
+        <name>writter_pageview</name>
+        <value>com.qianfeng.anlystic.mr.pv.PageViewWritter</value>
+    </property>
+
+    <property>
+        <name>writter_location</name>
+        <value>com.qianfeng.anlystic.mr.local.LocationWritter</value>
+    </property>
+</configuration>

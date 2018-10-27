@@ -1,0 +1,69 @@
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="lda-hive">
+    <start to="etl"/>
+    <action name="etl">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <main-class>com.qianfeng.etl.tohdfs.ParserLogDataToHdfsRunner</main-class>
+            <arg>-d</arg>
+            <arg>${run_date}</arg>
+        </java>
+        <ok to="en"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="en">
+        <shell xmlns="uri:oozie:shell-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+        </configuration>
+        <exec>en.sh</exec>
+        <argument>-d</argument>
+        <argument>${run_date}</argument>
+        <file>en.sh</file>
+        <capture-output />
+        </shell>
+        <ok to="vd"/>
+        <error to="fail"/>
+    </action>
+
+
+    <action name="vd">
+        <shell xmlns="uri:oozie:shell-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <exec>en.sh</exec>
+            <argument>-d</argument>
+            <argument>${run_date}</argument>
+            <file>en.sh</file>
+            <file>en.sh</file>
+            <capture-output />
+        </shell>
+            <ok to="end"/>
+            <error to="fail"/>
+    </action>
+
+    <kill name="fail">
+        <message>Shell action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+
+    <end name="end"/>
+</workflow-app>
